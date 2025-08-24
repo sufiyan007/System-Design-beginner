@@ -1,129 +1,279 @@
-# 🛠️ System Design Interview Prep (SDE-1 / 2 YOE)
+# 🛠️ System Design (SDE-1, 1–2 YOE)
 
-A collection of core **system design topics** explained in a structured way:  
-✅ Quick **Interview one-liner** to answer confidently  
-✅ Expandable `<details>` for deeper knowledge  
-✅ Real-world examples & trade-offs  
+A complete beginner-friendly guide to system design for interviews and real-world development.
 
 ---
 
-## 🧱 Monolith vs Microservices
+## 1. Monolith vs Microservices
 
-**Interview one-liner:**  
-"Monolith = single deployable unit; Microservices = multiple small services communicating over APIs, enabling scalability and independent deployments."
-
-<details>
-<summary>📖 Detailed Explanation</summary>
-
-- **Monolith:** All code + logic in a single deployable artifact (e.g., WAR/JAR in Java).  
-- **Microservices:** Each service handles one responsibility (Auth, Payments, Orders). They communicate via REST/gRPC/message queues.  
-
-</details>
+**Interview one-liner:**
+Monolith is one big system, Microservices break it into small independent services.
 
 <details>
-<summary>🌍 Real-world Examples</summary>
+<summary>Detailed Explanation</summary>
 
-- Monolith → Early LinkedIn, Twitter.  
-- Microservices → Netflix, Uber, Amazon.  
+* **Monolith**: Single codebase, everything packaged together (UI, business logic, database).
 
-</details>
+  * Easy to start, harder to scale.
+  * Example: Early-stage startups (like early Flipkart).
 
-<details>
-<summary>⚖️ Trade-offs</summary>
+* **Microservices**: Break application into small, independent services that communicate via APIs.
 
-- ✅ Microservices: Independent scaling, faster deployments, fault isolation.  
-- ❌ Microservices: Complex infra, debugging harder.  
-- ✅ Monolith: Simple to build/deploy/test.  
-- ❌ Monolith: Difficult to scale, team bottlenecks.  
+  * Independent scaling & deployment.
+  * Example: Netflix, Amazon.
+
+**Trade-offs:**
+
+* Monolith → Simpler, but tight coupling.
+* Microservices → Flexible, but adds complexity (network calls, service discovery).
 
 </details>
 
 ---
 
-## 📈 Horizontal vs Vertical Scaling
+## 2. Horizontal vs Vertical Scaling
 
-**Interview one-liner:**  
-"Vertical = add more power to one machine; Horizontal = add more machines to share the load."
-
-<details>
-<summary>📖 Detailed Explanation</summary>
-
-- **Vertical scaling (scale up):** Increase CPU, RAM, disk of a single server.  
-- **Horizontal scaling (scale out):** Add multiple servers behind a load balancer.  
-
-</details>
+**Interview one-liner:**
+Vertical scaling = bigger machine, Horizontal scaling = more machines.
 
 <details>
-<summary>🌍 Real-world Examples</summary>
+<summary>Detailed Explanation</summary>
 
-- Vertical → Buying a bigger AWS EC2 instance.  
-- Horizontal → Adding multiple EC2 instances behind an AWS ELB.  
+* **Vertical Scaling**: Increase CPU, RAM on a single server.
 
-</details>
+  * Example: Upgrading AWS EC2 from t2.small → m5.large.
+* **Horizontal Scaling**: Add more servers and distribute load.
 
-<details>
-<summary>⚖️ Trade-offs</summary>
+  * Example: Adding 10 web servers behind a load balancer.
 
-- ✅ Vertical: Simple, no code changes.  
-- ❌ Vertical: Hardware limits, single point of failure.  
-- ✅ Horizontal: Fault tolerance, theoretically infinite scale.  
-- ❌ Horizontal: Requires distributed systems, data partitioning.  
+**Trade-offs:**
+
+* Vertical → Simple but limited.
+* Horizontal → Infinite scaling but needs load balancers, distributed systems.
 
 </details>
 
 ---
 
-## 🗄️ Caching
+## 3. Stateful vs Stateless Systems
 
-**Interview one-liner:**  
-"Cache = temporary fast storage to reduce latency and avoid hitting DB repeatedly."
-
-<details>
-<summary>📖 Detailed Explanation</summary>
-
-- **Client-side cache:** Browser storing static assets (CSS, JS, images).  
-- **Server-side cache:** Reverse proxies (NGINX, Varnish).  
-- **Distributed cache:** Redis, Memcached for storing computed data.  
-
-</details>
+**Interview one-liner:**
+Stateful remembers client data, Stateless treats every request independently.
 
 <details>
-<summary>🌍 Real-world Examples</summary>
+<summary>Detailed Explanation</summary>
 
-- Netflix stores recommendation results in Redis.  
-- Amazon caches product details to reduce DB load.  
+* **Stateful**: Server stores user session (like login info).
 
-</details>
+  * Example: Traditional banking apps.
+* **Stateless**: Each request is independent; client provides all info.
 
-<details>
-<summary>⚖️ Trade-offs</summary>
+  * Example: REST APIs, JWT-based authentication.
 
-- ✅ Faster response times, reduces DB load.  
-- ❌ Stale data, cache invalidation is hard.  
+**Trade-offs:**
+
+* Stateful → Easier for sessions but harder to scale.
+* Stateless → Easier to scale, harder to manage session persistence.
 
 </details>
 
 ---
 
-## 🧩 CAP Theorem
+## 4. Caching
 
-**Interview one-liner:**  
-"In a distributed system, you can only guarantee 2 of Consistency, Availability, Partition tolerance — never all 3."
+**Interview one-liner:**
+Caching stores frequently used data closer to users to reduce latency.
 
 <details>
-<summary>📖 Detailed Explanation</summary>
+<summary>Detailed Explanation</summary>
 
-- **Consistency (C):** Every read gets the latest write.  
-- **Availability (A):** Every request gets a response, even if stale.  
-- **Partition tolerance (P):** System keeps working despite network issues.  
+* **Client-side cache**: Browser cache.
+* **CDN cache**: Cloudflare/Akamai store content globally.
+* **Server-side cache**: Redis/Memcached.
+
+**Trade-offs:**
+
+* Faster response, but needs invalidation strategy.
 
 </details>
 
-<details>
-<summary>🌍 Real-world Examples</summary>
+---
 
-- CP → Traditional SQL DBs (Consistency + Partition Tolerance).  
-- AP → DynamoDB, Cassandra (Availability + Partition Tolerance).  
-- CA → Only possible if no network partitions (rare in practice).  
+## 5. Cache Eviction Policies (LRU, LFU)
+
+**Interview one-liner:**
+LRU removes least recently used items, LFU removes least frequently used items.
+
+<details>
+<summary>Detailed Explanation</summary>
+
+* **LRU (Least Recently Used)**: Remove the item not used recently.
+* **LFU (Least Frequently Used)**: Remove the item used least number of times.
+
+**Example:**
+Netflix video thumbnails → LRU.
+E-commerce popular items → LFU.
 
 </details>
+
+---
+
+## 6. Databases: SQL vs NoSQL
+
+**Interview one-liner:**
+SQL = structured & relational, NoSQL = flexible & scalable.
+
+<details>
+<summary>Detailed Explanation</summary>
+
+* **SQL**: Tables, rows, fixed schema.
+
+  * Example: MySQL, PostgreSQL.
+* **NoSQL**: Key-Value, Document, Column, Graph.
+
+  * Example: MongoDB, DynamoDB, Cassandra.
+
+**Trade-offs:**
+
+* SQL → Consistency, complex queries.
+* NoSQL → Flexibility, scalability.
+
+</details>
+
+---
+
+## 7. Indexing (Primary, Secondary)
+
+**Interview one-liner:**
+Indexes make data retrieval faster.
+
+<details>
+<summary>Detailed Explanation</summary>
+
+* **Primary Index**: Based on primary key.
+* **Secondary Index**: Extra lookup.
+
+**Example:**
+
+* Primary: `user_id`
+* Secondary: `email`
+
+</details>
+
+---
+
+## 8. Sharding, Replication, Partitioning
+
+**Interview one-liner:**
+Sharding = split data, Replication = duplicate data, Partitioning = logical data separation.
+
+<details>
+<summary>Detailed Explanation</summary>
+
+* **Sharding**: Splitting across multiple databases.
+* **Replication**: Copying data to multiple nodes.
+* **Partitioning**: Dividing within same DB.
+
+**Example:**
+
+* Instagram users split by country = sharding.
+* 3 DB copies for backup = replication.
+
+</details>
+
+---
+
+## 9. Load Balancers
+
+**Interview one-liner:**
+Distributes traffic across servers.
+
+<details>
+<summary>Detailed Explanation</summary>
+
+* **Round Robin**: Sequential distribution.
+* **Least Connections**: Server with least load.
+* **IP Hash**: Same IP goes to same server.
+
+**L4 vs L7**:
+
+* L4: TCP/UDP traffic.
+* L7: Application layer (HTTP headers, cookies).
+
+</details>
+
+---
+
+## 10. Message Queues & Event-Driven Systems
+
+**Interview one-liner:**
+Message queues decouple producers & consumers.
+
+<details>
+<summary>Detailed Explanation</summary>
+
+* **Producer → Queue → Consumer**
+* Tools: Kafka, RabbitMQ, AWS SQS.
+
+**Example:**
+
+* Flipkart order service sends event → Inventory service consumes.
+
+</details>
+
+---
+
+## 11. CDN (Content Delivery Network)
+
+**Interview one-liner:**
+CDNs bring content closer to users.
+
+<details>
+<summary>Detailed Explanation</summary>
+
+* Cloudflare, Akamai store static content globally.
+* Reduce latency, improve performance.
+
+**Example:**
+
+* Netflix streaming, YouTube videos.
+
+</details>
+
+---
+
+## 12. Storage Systems (Extra for 2 YOE)
+
+**Interview one-liner:**
+Block = raw storage, File = files/folders, Object = blobs.
+
+<details>
+<summary>Detailed Explanation</summary>
+
+* **Block Storage**: Like hard disk (AWS EBS).
+* **File Storage**: Hierarchical files (AWS EFS).
+* **Object Storage**: Unstructured (AWS S3).
+
+**Example:**
+
+* S3 for images, EBS for databases, EFS for shared file system.
+
+</details>
+
+---
+
+# ✅ Interview Safe Phrases
+
+* "It depends on use case."
+* "Trade-off between consistency, availability, and performance."
+* "For scaling, I’d prefer stateless + horizontal scaling."
+
+---
+
+# 📌 Pro Tips
+
+* Always explain *why* you choose an approach.
+* Use real-world apps as examples.
+* Keep answers short but expandable if interviewer asks.
+
+---
